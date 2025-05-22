@@ -171,7 +171,7 @@ const deleteArticlesByAuthor = async(req, res) => {
     .then((results) => {
       res.status(201).json({
         success: true,
-        massage: `Article with id: ${id} deleted successfully`,
+        massage: `Articles has been deleted successfully by author : ${id}`,
         article: results,
       });
     })
