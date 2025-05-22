@@ -78,7 +78,7 @@ const getArticlesByAuthor = async (req, res) => {
 // This function returns article by its id
 const getArticleById = async (req, res) => {
   const { id } = req.params;
-  console.log(id)
+
   try {
     await pool
       .query(
@@ -110,8 +110,30 @@ const getArticleById = async (req, res) => {
 };
 
 // This function updates article by its id
-const updateArticleById = (req, res) => {
-  //TODO: write your code here
+const updateArticleById = async (req, res) => {
+  const { title, description } = req.body;
+  const { id } = req.params;
+
+  await pool
+    .query(`UPDATE articles SET title = $1 , description = $2 WHERE id = $3`, [
+      title,
+      description,
+      id,
+    ])
+    .then((results) => {
+      res.status(201).json({
+        success: true,
+        massage: `Article with id: ${id} updated successfully`,
+        article: results,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        massage: `Server Error`,
+        err: err.message,
+      });
+    });
 };
 
 // This function deletes a specific article by its id
@@ -129,4 +151,5 @@ module.exports = {
   getAllArticles,
   getArticlesByAuthor,
   getArticleById,
+  updateArticleById,
 };
