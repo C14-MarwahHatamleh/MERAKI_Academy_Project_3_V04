@@ -49,7 +49,7 @@ const getArticlesByAuthor = async (req, res) => {
   const { author_id } = req.query;
   try {
     await pool
-      .query(`SELECT * FROM articles WHERE author_id =$1`, [author_id])
+      .query(`SELECT * FROM articles WHERE author_id =$1 AND is_deleted= $2`, [author_id ,0])
       .then((results) => {
         res.status(201).json({
           success: true,
