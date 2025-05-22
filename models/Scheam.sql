@@ -33,7 +33,6 @@ CREATE TABLE articles (
 );
 
 
-
 CREATE TABLE comments(
     id SERIAL NOT NULL,
     comment TEXT,
