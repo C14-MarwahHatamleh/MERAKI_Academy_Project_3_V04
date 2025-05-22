@@ -49,7 +49,10 @@ const getArticlesByAuthor = async (req, res) => {
   const { author_id } = req.query;
   try {
     await pool
-      .query(`SELECT * FROM articles WHERE author_id =$1 AND is_deleted= $2`, [author_id ,0])
+      .query(`SELECT * FROM articles WHERE author_id =$1 AND is_deleted= $2`, [
+        author_id,
+        0,
+      ])
       .then((results) => {
         res.status(201).json({
           success: true,
@@ -73,8 +76,37 @@ const getArticlesByAuthor = async (req, res) => {
 };
 
 // This function returns article by its id
-const getArticleById = (req, res) => {
-  //TODO: write your code here
+const getArticleById = async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+  try {
+    await pool
+      .query(
+        `SELECT users.firstname , users.id , articles.id , articles.title , articles.description , articles.author_id , articles.is_deleted FROM articles FULL OUTER JOIN  users ON 
+        users.id = articles.author_id
+        WHERE users.id = $1 AND articles.is_deleted= $2`,
+        [id, 0]
+      )
+      .then((results) => {
+        res.status(201).json({
+          success: true,
+          massage: `All articles for the author: ${id}`,
+          roles: results.rows,
+        });
+      })
+      .catch((err) => {
+        res.status(404).json({
+          success: false,
+          massage: `The author:  ${author_id} has no articles`,
+        });
+      });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      massage: `Server Error`,
+      err: error.message,
+    });
+  }
 };
 
 // This function updates article by its id
@@ -92,4 +124,9 @@ const deleteArticlesByAuthor = (req, res) => {
   //TODO: write your code here
 };
 
-module.exports = { createNewArticle, getAllArticles, getArticlesByAuthor };
+module.exports = {
+  createNewArticle,
+  getAllArticles,
+  getArticlesByAuthor,
+  getArticleById,
+};
