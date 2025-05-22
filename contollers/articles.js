@@ -161,8 +161,29 @@ const deleteArticleById = async (req, res) => {
 };
 
 // This function deletes all the articles for a specific author
-const deleteArticlesByAuthor = (req, res) => {
-  //TODO: write your code here
+const deleteArticlesByAuthor = async(req, res) => {
+ const { id } = req.params;
+  await pool
+    .query(`DELETE FROM articles WHERE author_id = $1 AND is_deleted = $2`, [
+      id,
+      1
+    ])
+    .then((results) => {
+      res.status(201).json({
+        success: true,
+        massage: `Article with id: ${id} deleted successfully`,
+        article: results,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        massage: `Server Error`,
+        err: err.message,
+      });
+    });
+
+
 };
 
 module.exports = {
@@ -171,5 +192,6 @@ module.exports = {
   getArticlesByAuthor,
   getArticleById,
   updateArticleById,
-  deleteArticleById
+  deleteArticleById,
+  deleteArticlesByAuthor
 };
