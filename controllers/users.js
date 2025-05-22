@@ -9,25 +9,35 @@ const register = async (req, res) => {
     req.body;
   try {
     const query = `INSERT INTO users (firstName, lastName, age, country, email, password, role_id) VALUES ($1 , $2 , $3 , $4 , $5 , $6 , $7)`;
-    const result = await pool.query(query, [
-      firstName,
-      lastName,
-      age,
-      country,
-      email,
-      await bcrypt.hash(password, 10),
-      role_id,
-    ]);
-    res.status(201).json({
-      success: true,
-      message: "Account created successfully",
-    });
+    await pool
+      .query(query, [
+        firstName,
+        lastName,
+        age,
+        country,
+        email,
+        await bcrypt.hash(password, 10),
+        role_id,
+      ])
+      .then((results) => {
+        res.status(201).json({
+          success: true,
+          message: "Account created successfully",
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          success: false,
+          message: "The email already exists",
+          err: err,
+        });
+      });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "The email already exists",
-      err: error.message,
-    });
+       res.status(500).json({
+          success: false,
+          message: "Server Error",
+          err: error,
+        });
   }
 };
 
