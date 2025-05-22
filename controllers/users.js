@@ -4,6 +4,10 @@ const pg = require("pg");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const SECRET = process.env.SECRET;
+const TOKEN_EXP_Time = process.env.EXPIRESIN;
+
+
 const register = async (req, res) => {
   const { firstName, lastName, age, country, email, password, role_id } =
     req.body;
@@ -33,16 +37,84 @@ const register = async (req, res) => {
         });
       });
   } catch (error) {
-       res.status(500).json({
-          success: false,
-          message: "Server Error",
-          err: error,
-        });
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      err: error,
+    });
   }
 };
 
-const login = (req, res) => {
-  //TODO: write your code here
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  console.log(req.body);
+  try {
+    const query = `SELECT * from  users WHERE email = $1`;
+    const result = await pool.query(query, [email]);
+    if (result) {
+      const dbHashPass = result.rows[0].password;
+      console.log(dbHashPass)
+      const isMatch = await bcrypt.compare(password, dbHashPass);
+      console.log("isMatch" , isMatch)
+      if (!isMatch) {
+        res.status(401).json({
+          success: false,
+          message:
+            "The email doesn’t exist or the password you’ve entered is incorrect",
+          data: null,
+        });
+      } else {
+         const token = await generateTokens(result.rows[0]);
+         
+        res.status(200).json({
+          success: true,
+          message: "Valid login credentials",
+          token: token,
+        });
+      }
+    } else {
+      res.status(401).json({
+        success: false,
+        message: "Invalid login credentials",
+      });
+    }
+    // console.log(result.rows);
+    // const token = generateTokens(result.rows);
+    // console.log(token);
+    // .then((results) => {
+    //    res.status(200).json({
+    //   success: true,
+    //    massage: "Valid login credentials",
+    //   token: ,
+    //   userId: ,
+    //   });})
+    // .catch((err) => {});
+  } catch (error) {}
 };
 
-module.exports = { register };
+const generateTokens = async (user) => {
+  let returnValue;
+  if (user !== null) {
+    const id = user.role_id;
+    const query = `SELECT * from roles where id = $1`;
+     const result = await pool.query(query, [id]);
+
+    const payload = {
+      country: user.country,
+      userID: user.id,
+      role: {
+        role: result.role,
+      },
+    };
+    const options = {
+      expiresIn: TOKEN_EXP_Time,
+    };
+    returnValue = jwt.sign(payload, SECRET, options);
+  } else {
+    returnValue = "Sorry there is no any role for this email";
+  }
+  console.log(returnValue);
+  return returnValue;
+};
+
+module.exports = { register, login };
