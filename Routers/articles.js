@@ -1,6 +1,11 @@
 const express = require("express");
+
+const {createNewArticle , getAllArticles} = require("../contollers/articles")
 const articleRouter = express.Router();
-// Import articles controllers
+
+
+articleRouter.post("/" , createNewArticle)
+articleRouter.get("/" , getAllArticles)
 
 
 module.exports = articleRouter;
