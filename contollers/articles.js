@@ -45,8 +45,31 @@ const getAllArticles = (req, res) => {
 };
 
 //This function returns articles by author
-const getArticlesByAuthor = (req, res) => {
-  //TODO: write your code here
+const getArticlesByAuthor = async (req, res) => {
+  const { author_id } = req.query;
+  try {
+    await pool
+      .query(`SELECT * FROM articles WHERE author_id =$1`, [author_id])
+      .then((results) => {
+        res.status(201).json({
+          success: true,
+          massage: `All articles for the author: ${author_id}`,
+          roles: results.rows,
+        });
+      })
+      .catch((err) => {
+        res.status(404).json({
+          success: false,
+          massage: `The author:  ${author_id} has no articles`,
+        });
+      });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      massage: `Server Error`,
+      err: error.message,
+    });
+  }
 };
 
 // This function returns article by its id
@@ -69,4 +92,4 @@ const deleteArticlesByAuthor = (req, res) => {
   //TODO: write your code here
 };
 
-module.exports = { createNewArticle , getAllArticles};
+module.exports = { createNewArticle, getAllArticles, getArticlesByAuthor };
