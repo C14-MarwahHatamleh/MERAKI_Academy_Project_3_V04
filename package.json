@@ -1,0 +1,26 @@
+{
+  "name": "meraki_academy_project_3_v04",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "nodemon main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C14-MarwahHatamleh/MERAKI_Academy_Project_3_V04.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/C14-MarwahHatamleh/MERAKI_Academy_Project_3_V04/issues"
+  },
+  "homepage": "https://github.com/C14-MarwahHatamleh/MERAKI_Academy_Project_3_V04#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "pg": "^8.16.0"
+  }
+}
