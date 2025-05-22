@@ -137,8 +137,27 @@ const updateArticleById = async (req, res) => {
 };
 
 // This function deletes a specific article by its id
-const deleteArticleById = (req, res) => {
-  //TODO: write your code here
+const deleteArticleById = async (req, res) => {
+   const { id } = req.params;
+  await pool
+    .query(`DELETE FROM articles WHERE id = $1 AND is_deleted = $2`, [
+      id,
+      1
+    ])
+    .then((results) => {
+      res.status(201).json({
+        success: true,
+        massage: `Article with id: ${id} deleted successfully`,
+        article: results,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        massage: `Server Error`,
+        err: err.message,
+      });
+    });
 };
 
 // This function deletes all the articles for a specific author
@@ -152,4 +171,5 @@ module.exports = {
   getArticlesByAuthor,
   getArticleById,
   updateArticleById,
+  deleteArticleById
 };

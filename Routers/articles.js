@@ -6,6 +6,7 @@ const {
   getArticlesByAuthor,
   getArticleById,
   updateArticleById,
+  deleteArticleById
 } = require("../contollers/articles");
 const articleRouter = express.Router();
 
@@ -14,6 +15,7 @@ articleRouter.get("/", getAllArticles);
 articleRouter.get("/search_1", getArticlesByAuthor);
 articleRouter.get("/search_2/:id", getArticleById);
 articleRouter.put("/:id", updateArticleById);
+articleRouter.delete("/:id", deleteArticleById);
 
 module.exports = articleRouter;
 
