@@ -1,9 +1,17 @@
-// This function checks if the user has a permission the passed permission
+const authorization = (permissions) => {
+  return (req, res, next) => {
+    const userPermission = req.token.role.permissions;
+    console.log(permissions, userPermission);
 
-const authorization = (string) => {
-
-    //TODO: write your code here
-  
+    if (userPermission.includes(permissions)) {
+      next();
+    } else {
+      res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+  };
 };
 
 module.exports = authorization;

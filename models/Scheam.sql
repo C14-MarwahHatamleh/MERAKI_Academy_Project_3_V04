@@ -7,7 +7,6 @@ CREATE TABLE roles (
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE users(
     id SERIAL NOT NULL,
     firstName VARCHAR(255),

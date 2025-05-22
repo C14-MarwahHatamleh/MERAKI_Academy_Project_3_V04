@@ -1,11 +1,12 @@
 const express = require("express");
+
+const { register } = require("../controllers/users");
 const userRouter = express.Router();
 // Import users controllers
 
-
+userRouter.post("/register", register);
 
 module.exports = userRouter;
-
 
 /*
  * Testing Object:
