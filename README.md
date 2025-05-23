@@ -6,7 +6,7 @@ MERAKI-ACADEMY
  </a>
 </p>
 
-<h3 align="center">Blog App (PostgreSQL with Node.js) for BE 
+<h3 align="center">BLOG APP (PostgreSQL with Node.js) for BE 
 </h3>
 
 ---
