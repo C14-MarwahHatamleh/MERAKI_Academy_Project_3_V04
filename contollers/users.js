@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 const TOKEN_EXP_Time = process.env.EXPIRESIN;
 
-
 const register = async (req, res) => {
   const { firstName, lastName, age, country, email, password, role_id } =
     req.body;
@@ -53,9 +52,9 @@ const login = async (req, res) => {
     const result = await pool.query(query, [email]);
     if (result) {
       const dbHashPass = result.rows[0].password;
-      console.log(dbHashPass)
+      console.log(dbHashPass);
       const isMatch = await bcrypt.compare(password, dbHashPass);
-      console.log("isMatch" , isMatch)
+      console.log("isMatch", isMatch);
       if (!isMatch) {
         res.status(401).json({
           success: false,
@@ -64,8 +63,8 @@ const login = async (req, res) => {
           data: null,
         });
       } else {
-         const token = await generateTokens(result.rows[0]);
-         
+        const token = await generateTokens(result.rows[0]);
+
         res.status(200).json({
           success: true,
           message: "Valid login credentials",
@@ -96,14 +95,28 @@ const generateTokens = async (user) => {
   let returnValue;
   if (user !== null) {
     const id = user.role_id;
-    const query = `SELECT * from roles where id = $1`;
-     const result = await pool.query(query, [id]);
-
+   
+    const query = `SELECT * FROM role_permission FULL OUTER JOIN permissions ON 
+    role_permission.role_id = permissions.id
+    WHERE role_permission.role_id = $1`
+    
+    // `SELECT * FROM role_permission FULL OUTER JOIN permission ON 
+    // role_permission.id = permission.role_id
+    // WHERE roles.id = $1`
+    
+    
+    // `SELECT * from roles FULL OUTER JOIN role_permission ON 
+    // roles.id = role_permission.role_id
+    // where id = $1`;
+    
+    const result = await pool.query(query, [id]);
+    console.log(result.rows[0]);
     const payload = {
       country: user.country,
       userID: user.id,
       role: {
-        role: result.role,
+        role: result.rows[0].role,
+        permissions: result.rows[0].permission,
       },
     };
     const options = {

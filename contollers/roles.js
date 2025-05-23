@@ -42,7 +42,21 @@ const createNewPermission = (req, res) => {
 
 // This function creates new role permission
 const createNewRolePermission = (req, res) => {
-  //TODO: write your code here
+    const { role_id , permission_id } = req.body;
+  pool
+    .query(`INSERT INTO role_permission (role_id , permission_id) VALUES ($1 , $2)`, [role_id , permission_id])
+    .then((results) => {
+      res.status(201).json({
+        success: true,
+        massage: "Role Permission created successfully",
+        roles: results,
+      });
+    })
+    .catch((err) => {  res.status(500).json({
+      success: false,
+      massage: "Server error",
+      err : err.massage
+    });});
 };
 
 module.exports = {

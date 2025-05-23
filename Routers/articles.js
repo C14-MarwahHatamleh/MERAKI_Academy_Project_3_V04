@@ -14,7 +14,12 @@ const authzMiddlewares = require("../middlewares/authorization");
 
 const articleRouter = express.Router();
 
-articleRouter.post("/", createNewArticle);
+articleRouter.post(
+  "/",
+  authMiddlewares,
+  authzMiddlewares("CREATE_ARTICLES"),
+  createNewArticle
+);
 articleRouter.get("/", authMiddlewares, getAllArticles);
 articleRouter.get("/search_1", getArticlesByAuthor);
 articleRouter.get("/search_2/:id", getArticleById);

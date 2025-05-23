@@ -4,7 +4,8 @@ const pg = require("pg");
 
 // This function creates new article
 const createNewArticle = async (req, res) => {
-  const { title, description, author_id } = req.body;
+  const { title, description } = req.body;
+   const author_id = req.token.userID;
   const query = `INSERT INTO articles (title , description , author_id) VALUES ($1 , $2 , $3)`;
   pool
     .query(query, [title, description, author_id])
