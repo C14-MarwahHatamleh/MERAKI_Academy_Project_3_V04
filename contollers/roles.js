@@ -7,7 +7,7 @@ const createNewRole = async (req, res) => {
   try {
     const query = `INSERT INTO roles (role) VALUES ($1)`;
     const result = await pool.query(query, [role]);
-   
+
     res.status(201).json({
       success: true,
       massage: "Role created successfully",
@@ -23,7 +23,21 @@ const createNewRole = async (req, res) => {
 
 // This function creates new permission
 const createNewPermission = (req, res) => {
-  //TODO: write your code here
+  const { permission } = req.body;
+  pool
+    .query(`INSERT INTO permissions (permission) VALUES ($1)`, [permission])
+    .then((results) => {
+      res.status(201).json({
+        success: true,
+        massage: "Permission created successfully",
+        roles: results,
+      });
+    })
+    .catch((err) => {  res.status(500).json({
+      success: false,
+      massage: "Server error",
+      err : err.massage
+    });});
 };
 
 // This function creates new role permission
@@ -31,4 +45,8 @@ const createNewRolePermission = (req, res) => {
   //TODO: write your code here
 };
 
-module.exports = { createNewRole };
+module.exports = {
+  createNewRole,
+  createNewPermission,
+  createNewRolePermission,
+};

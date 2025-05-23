@@ -27,7 +27,7 @@ const createNewArticle = async (req, res) => {
 // This function returns the articles
 const getAllArticles = (req, res) => {
   pool
-    .query(`SELECT * from articles`)
+    .query(`SELECT * from articles WHERE is_deleted = 0`)
     .then((results) => {
       res.status(201).json({
         success: true,

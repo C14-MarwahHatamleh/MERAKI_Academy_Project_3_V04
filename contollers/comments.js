@@ -34,8 +34,8 @@ const getCommentsByArticle = (req, res) => {
 
   pool
     .query(
-      `SELECT users.id , users.firstname , comments.comment , comments.comment , comments.article_id , comments.commenter_id FROM comments FULL OUTER JOIN  users ON users.id = comments.commenter_id  WHERE commenter_id = $1`,
-      [id]
+      `SELECT users.id , users.firstname , comments.comment , comments.comment , comments.article_id , comments.commenter_id FROM comments FULL OUTER JOIN  users ON users.id = comments.commenter_id  WHERE commenter_id = $1 AND is_deleted = $2`,
+      [id, 0]
     )
     .then((results) => {
       res.status(200).json({
